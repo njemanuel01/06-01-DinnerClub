@@ -1,4 +1,4 @@
-require "activesupport"
+require "active_support"
 require "active_support/core_ext/array/conversions.rb"
 require_relative "check_splitter.rb"
 require_relative "dinner_club_resource.rb"
