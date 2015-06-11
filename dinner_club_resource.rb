@@ -1,0 +1,54 @@
+require "sqlite3"
+
+class DinnerClubResource
+  def initialize(name)
+    CONNECTION = SQLite3::Database.new("#{name}dinnerclub.db")
+    CONNECTION.results_as_hash = true
+    CONNECTION.execute("CREATE TABLE 'members' (id INTEGER PRIMARY KEY, name TEXT, total REAL);")
+    CONNECTION.exectue("CREATE TABLE 'outings' (id INTEGER PRIMARY KEY, date TEXT, attendees TEXT);")
+    CONNECTION.execute("CREATE TABLE 'checksplitter_uses' (id INTEGER PRIMARY KEY, date TEXT, 
+    meal_cost REAL, tip_percentage INTEGER, group_number INTEGER);")
+  end
+  
+  def create_member(name, total)
+    CONNECTION.execute("INSERT INTO 'members' (name, total) VALUES ('#{name}', #{total});")
+  end
+  
+  def get_member_by_name(name)
+    CONNECTION.execute("SELECT * FROM 'members' WHERE name = '#{name}';")
+  end
+  
+  def update_member(name, total)
+    CONNECTION.execute("UPDATE 'members' SET total = #{total} WHERE member = '#{name}';")
+  end
+  
+  def delete_member_by_name(name)
+    CONNECTION.execute("DELETE FROM 'members' WHERE name = '#{name}';")
+  end
+  
+  def create_outing(date, attendees)
+    CONNECTION.execute("INSERT INTO 'outings' (date, attendees) VALUES('#{date}', '#{attendees}');")
+  end
+  
+  def get_outing_by_date(date)
+    CONNECTION.execute("SELECT * FROM 'outings' WHERE date = '#{date}';")
+  end
+  
+  def delete_outing_by_date(date)
+    CONNECTION.execute("DELETE FROM 'outings' WHERE date = '#{date}';")
+  end
+  
+  def create_check(meal_cost, tip_percentage, group_number)
+    CONNECTION.execute("INSERT INTO 'checksplitter_uses' (date, meal_cost, tip_percentage, group_number) 
+    VALUES ('#{date}', #{meal_cost}, #{tip_percentage}, #{group_number});")
+  end
+  
+  def get_check_by_date(date)
+    CONNECTION.execute("SELECT * FROM 'checksplitter_uses' WHERE date = '#{date}';")
+  end
+  
+  def delete_check_by_date(date)
+    CONNECTION.execute("DELETE FROM 'checksplitter_uses' WHERE date = '#{date}';")
+  end
+  
+end
