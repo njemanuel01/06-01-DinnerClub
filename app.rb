@@ -1,9 +1,12 @@
 require_relative "dinner_club.rb"
-  
-puts "Please enter the names of your dinner club separated by a comma"
+
+puts "What is your club's name?"
+club_name = gets.chomp
+
+puts "Please enter names of your new dinner club members separated by a comma."
 people = gets.chomp
 
-club1 = DinnerClub.new(people.split(", "))
+club1 = DinnerClub.new(club_name, people.split(", "))
 
 puts "Would you like to enter a meal date? (Yes/No)"
 answer = gets.chomp

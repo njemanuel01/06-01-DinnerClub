@@ -5,7 +5,7 @@ class DinnerClubResource
     CONNECTION = SQLite3::Database.new("#{name}dinnerclub.db")
     CONNECTION.results_as_hash = true
     CONNECTION.execute("CREATE TABLE 'members' (id INTEGER PRIMARY KEY, name TEXT, total REAL);")
-    CONNECTION.exectue("CREATE TABLE 'outings' (id INTEGER PRIMARY KEY, date TEXT, attendees TEXT);")
+    CONNECTION.exectue("CREATE TABLE 'outings' (id INTEGER PRIMARY KEY, date TEXT, location TEXT, attendees TEXT);")
     CONNECTION.execute("CREATE TABLE 'checksplitter_uses' (id INTEGER PRIMARY KEY, date TEXT, 
     meal_cost REAL, tip_percentage INTEGER, group_number INTEGER);")
   end
@@ -18,7 +18,7 @@ class DinnerClubResource
     CONNECTION.execute("SELECT * FROM 'members' WHERE name = '#{name}';")
   end
   
-  def update_member(name, total)
+  def update_member_by_name(name, total)
     CONNECTION.execute("UPDATE 'members' SET total = #{total} WHERE member = '#{name}';")
   end
   
@@ -27,7 +27,7 @@ class DinnerClubResource
   end
   
   def create_outing(date, attendees)
-    CONNECTION.execute("INSERT INTO 'outings' (date, attendees) VALUES('#{date}', '#{attendees}');")
+    CONNECTION.execute("INSERT INTO 'outings' (date, location, attendees) VALUES('#{date}', '#{location}', #{attendees}');")
   end
   
   def get_outing_by_date(date)
@@ -38,7 +38,7 @@ class DinnerClubResource
     CONNECTION.execute("DELETE FROM 'outings' WHERE date = '#{date}';")
   end
   
-  def create_check(meal_cost, tip_percentage, group_number)
+  def create_check(date, meal_cost, tip_percentage, group_number)
     CONNECTION.execute("INSERT INTO 'checksplitter_uses' (date, meal_cost, tip_percentage, group_number) 
     VALUES ('#{date}', #{meal_cost}, #{tip_percentage}, #{group_number});")
   end

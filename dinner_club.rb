@@ -1,4 +1,7 @@
+require "activesupport"
+require "active_support/core_ext/array/conversions.rb"
 require_relative "check_splitter.rb"
+require_relative "dinner_club_resource.rb"
 
 # Public: Creates a dinner club given a list of names.
 # Puts those names in a hash which points to a total of dinner charges for each person.
@@ -7,8 +10,9 @@ class DinnerClub
   attr_reader :list, :outings
   
   # Public: Initializes a new DinnerClub.
-  def initialize(names)
+  def initialize(club_name, names)
     @names = names
+    @database = DinnerClubResource.new(club_name)
     self.names_hash
     @outings = {}
   end
@@ -22,6 +26,7 @@ class DinnerClub
     @list = Hash.new
     @names.each do |name|
       @list[name] = 0.0
+      @database.create_member(name, 0.0)
     end
   end
   
@@ -37,7 +42,8 @@ class DinnerClub
       charge = meal_cost*(1 + (tip_percentage/100.0))
       add_charge(treater, charge)
     else
-      check1 = CheckSplitter.new(meal_cost: meal_cost, tip_percentage: tip_percentage, group:  x = attendees.length)
+      @database.create_check(date, meal_cost, tip_percentage, attendees.length)
+      check1 = CheckSplitter.new(meal_cost: meal_cost, tip_percentage: tip_percentage, group:  attendees.length)
       charge = check1.cost_per_person
       attendees.each do |name|
         add_charge(name, charge)
@@ -55,6 +61,7 @@ class DinnerClub
   # Returns a float added to each attendees total amount
   def add_charge(name, charge)
     @list[name] += charge
+    @database.update_member_by_name(name, @list[name])
   end
   
   # Public:  Add's a meal to the outing hash.
@@ -66,6 +73,7 @@ class DinnerClub
   # Returns a hash in the outings hash corresponding to the meal.
   def outing(date, location, attendees)
     @outings[date] = {location => attendees}
+    @database.create_outing(date, location, attendees.to_sentence)
   end
   
 end
